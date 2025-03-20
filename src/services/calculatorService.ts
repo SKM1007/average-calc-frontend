@@ -14,6 +14,8 @@ export type NumberType = 'p' | 'f' | 'e' | 'r';
 class CalculatorService {
   private baseUrl = API_CONFIG.BASE_URL;
   private accessCode = API_CONFIG.ACCESS_CODE;
+  private rollNumber = API_CONFIG.REGISTRATION.ROLL_NUMBER;
+  private email = API_CONFIG.REGISTRATION.EMAIL;
   private storageKey = "calculator_window_state";
   private localEndpoint = "http://localhost:9876";
 
@@ -38,12 +40,16 @@ class CalculatorService {
       }
       
       console.log(`Attempting to fetch from: ${endpoint}`);
+      console.log(`Using roll number: ${this.rollNumber}`);
+      console.log(`Using email: ${this.email}`);
       
       const response = await fetch(endpoint, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${this.accessCode}`
+          "Authorization": `Bearer ${this.accessCode}`,
+          "X-Roll-Number": this.rollNumber,
+          "X-Email": this.email
         },
         mode: 'cors'
       });

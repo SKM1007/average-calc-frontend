@@ -16,6 +16,8 @@ export const ApiStatus = () => {
       try {
         console.log('Checking API connection...');
         console.log(`Using access code: ${API_CONFIG.ACCESS_CODE}`);
+        console.log(`Using roll number: ${API_CONFIG.REGISTRATION.ROLL_NUMBER}`);
+        console.log(`Using email: ${API_CONFIG.REGISTRATION.EMAIL}`);
         
         // Try to connect to the random numbers endpoint
         const endpoint = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.RANDOM}`;
@@ -25,7 +27,9 @@ export const ApiStatus = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${API_CONFIG.ACCESS_CODE}`
+            "Authorization": `Bearer ${API_CONFIG.ACCESS_CODE}`,
+            "X-Roll-Number": API_CONFIG.REGISTRATION.ROLL_NUMBER,
+            "X-Email": API_CONFIG.REGISTRATION.EMAIL
           },
           mode: 'cors'
         });
