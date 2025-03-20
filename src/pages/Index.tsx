@@ -9,14 +9,16 @@ import { ResultsDisplay } from "@/components/ResultsDisplay";
 import { ApiStatus } from "@/components/ApiStatus";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { RefreshCw, RotateCcw } from "lucide-react";
+import { RefreshCw, RotateCcw, AlertTriangle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const Index = () => {
   const [windowSize, setWindowSize] = useState<number>(10);
   const [selectedType, setSelectedType] = useState<NumberType | null>(null);
   const [results, setResults] = useState<WindowState | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load initial state on component mount
   useEffect(() => {
@@ -33,17 +35,37 @@ const Index = () => {
     }
 
     setIsLoading(true);
+    setError(null);
+    
     try {
+      console.log(`Fetching ${selectedType} numbers with window size ${windowSize}`);
       const data = await calculatorService.processData(windowSize, selectedType);
+      
       if (data) {
         setResults(data);
-        toast.success(`Successfully fetched ${selectedType} numbers`);
+        toast.success(`Successfully fetched ${getNumberTypeName(selectedType)} numbers`);
+        console.log("Fetched data:", data);
+      } else {
+        setError("No data received from the server");
+        toast.error("No data received from the server");
       }
     } catch (error) {
       console.error("Error fetching numbers:", error);
-      toast.error("Failed to fetch numbers");
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setError(errorMessage);
+      toast.error(`Failed to fetch numbers: ${errorMessage}`);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getNumberTypeName = (type: NumberType): string => {
+    switch (type) {
+      case 'p': return 'prime';
+      case 'f': return 'fibonacci';
+      case 'e': return 'even';
+      case 'r': return 'random';
+      default: return '';
     }
   };
 
@@ -51,6 +73,8 @@ const Index = () => {
     calculatorService.resetState();
     setResults(null);
     setSelectedType(null);
+    setError(null);
+    toast.success("Calculator state has been reset");
   };
 
   return (
@@ -60,6 +84,14 @@ const Index = () => {
         
         <main className="flex-1 w-full max-w-4xl mx-auto my-8 space-y-12">
           <ApiStatus />
+          
+          {error && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">

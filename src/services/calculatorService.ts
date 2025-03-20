@@ -24,25 +24,28 @@ class CalculatorService {
       
       switch (type) {
         case 'p': // Prime
-          endpoint = `${this.baseUrl}/primes`;
+          endpoint = `${this.baseUrl}${API_CONFIG.ENDPOINTS.PRIME}`;
           break;
         case 'f': // Fibonacci
-          endpoint = `${this.baseUrl}/fibo`;
+          endpoint = `${this.baseUrl}${API_CONFIG.ENDPOINTS.FIBONACCI}`;
           break;
         case 'e': // Even
-          endpoint = `${this.baseUrl}/even`;
+          endpoint = `${this.baseUrl}${API_CONFIG.ENDPOINTS.EVEN}`;
           break;
         case 'r': // Random
-          endpoint = `${this.baseUrl}/rand`;
+          endpoint = `${this.baseUrl}${API_CONFIG.ENDPOINTS.RANDOM}`;
           break;
       }
+      
+      console.log(`Attempting to fetch from: ${endpoint}`);
       
       const response = await fetch(endpoint, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${this.accessCode}`
-        }
+        },
+        mode: 'cors'
       });
       
       if (!response.ok) {
@@ -57,7 +60,8 @@ class CalculatorService {
       
     } catch (error) {
       console.error("Error fetching numbers:", error);
-      toast.error("Failed to fetch numbers from the server");
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast.error(`Failed to fetch numbers: ${errorMessage}`);
       return [];
     }
   }
@@ -166,4 +170,3 @@ class CalculatorService {
 }
 
 export const calculatorService = new CalculatorService();
-
