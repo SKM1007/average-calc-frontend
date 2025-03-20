@@ -1,28 +1,32 @@
 
-import { CalculatorIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Info } from "lucide-react";
 
 export const Header = () => {
   return (
-    <header className="w-full px-6 py-8 md:py-12 flex flex-col items-center text-center animate-slide-down">
-      <div className="inline-flex items-center justify-center p-3 mb-6 rounded-full bg-primary/10">
-        <CalculatorIcon className="h-8 w-8 text-primary" />
-      </div>
-      
-      <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-        Average Calculator
-      </h1>
-      
-      <div className="flex items-center justify-center mb-3 space-x-2">
-        <Badge className="bg-secondary text-secondary-foreground" variant="secondary">
+    <header className={cn(
+      "w-full py-6 flex flex-col sm:flex-row items-center justify-between animate-fade-in",
+      "border-b border-border/50"
+    )}>
+      <div className="flex items-center mb-4 sm:mb-0">
+        <Link to="/" className="text-xl md:text-2xl font-semibold tracking-tight hover:opacity-80 transition-opacity">
+          Average Calculator
+        </Link>
+        <span className="ml-2 px-2 py-0.5 text-xs bg-secondary text-secondary-foreground rounded-md">
           Microservice
-        </Badge>
-        <Badge variant="outline">REST API</Badge>
+        </span>
       </div>
       
-      <p className="text-muted-foreground max-w-[42rem] md:leading-relaxed">
-        A minimalist calculator microservice that processes a window of numbers from various sources and calculates their average.
-      </p>
+      <div className="flex items-center space-x-4">
+        <Link to="/api-info">
+          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+            <Info className="h-4 w-4" />
+            <span>API Info</span>
+          </Button>
+        </Link>
+      </div>
     </header>
   );
 };

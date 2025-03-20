@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { NumberTypeSelector } from "@/components/NumberTypeSelector";
 import { WindowSizeSelector } from "@/components/WindowSizeSelector";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
+import { ApiStatus } from "@/components/ApiStatus";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { RefreshCw, RotateCcw } from "lucide-react";
@@ -58,6 +59,8 @@ const Index = () => {
         <Header />
         
         <main className="flex-1 w-full max-w-4xl mx-auto my-8 space-y-12">
+          <ApiStatus />
+          
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="glass-effect p-6 rounded-xl">

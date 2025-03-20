@@ -1,5 +1,6 @@
 
 import { toast } from "sonner";
+import { API_CONFIG } from "@/config/apiConfig";
 
 export interface WindowState {
   windowPrevState: number[];
@@ -11,7 +12,8 @@ export interface WindowState {
 export type NumberType = 'p' | 'f' | 'e' | 'r';
 
 class CalculatorService {
-  private baseUrl = "http://20.244.56.144/test";
+  private baseUrl = API_CONFIG.BASE_URL;
+  private accessCode = API_CONFIG.ACCESS_CODE;
   private storageKey = "calculator_window_state";
   private localEndpoint = "http://localhost:9876";
 
@@ -35,13 +37,22 @@ class CalculatorService {
           break;
       }
       
-      const response = await fetch(endpoint);
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${this.accessCode}`
+        }
+      });
       
       if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`API error (${response.status}): ${errorText}`);
+        throw new Error(`Failed to fetch: ${response.status} - ${errorText}`);
       }
       
       const data = await response.json();
+      console.log(`Fetched ${type} numbers:`, data);
       return data.numbers || [];
       
     } catch (error) {
@@ -133,7 +144,8 @@ class CalculatorService {
       const response = await fetch(endpoint, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${this.accessCode}`
         }
       });
       
@@ -154,3 +166,4 @@ class CalculatorService {
 }
 
 export const calculatorService = new CalculatorService();
+
